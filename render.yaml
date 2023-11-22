@@ -1,0 +1,6 @@
+services:
+  - name: Planting-time_Prediction_Engine
+    type: web
+    env: python=3.11
+    buildCommand: pip install -r requirements.txt
+    startcommand: uvicorn crop_model_final:app --host 0.0.0.0 --port $PORT
