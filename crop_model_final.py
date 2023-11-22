@@ -107,9 +107,9 @@ def load_and_predict_classification_model(input_data):
     predictions = loaded_classification_model.predict(input_data)
 
     return predictions
-
-train_and_save_regression_model("C:\\Users\\aguerokhun\\Documents\\hackathon\\Crop_Data.csv")
-train_and_save_classification_model("C:\\Users\\aguerokhun\\Documents\\hackathon\\Crop_Data.csv")
+#This is an example and can be uncommented for testing
+# train_and_save_regression_model("C:\\Users\\aguerokhun\\Documents\\hackathon\\Crop_Data.csv")
+# train_and_save_classification_model("C:\\Users\\aguerokhun\\Documents\\hackathon\\Crop_Data.csv")
 
 # Endpoints for predictions
 @app.get("/predict_regression/")
