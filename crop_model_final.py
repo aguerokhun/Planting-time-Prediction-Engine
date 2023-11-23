@@ -90,7 +90,7 @@ def preprocess_input_data(input_data: Dict[str, Union[int, float]]) -> pd.DataFr
     # Additional preprocessing steps if needed
     return df
     
-def load_and_predict_regression_model(input_data: pd.Dataframe ):
+def load_and_predict_regression_model(input_data:pd.DataFrame):
     # Load the trained regression model
     loaded_regression_model = load('regression_model.joblib')
 
