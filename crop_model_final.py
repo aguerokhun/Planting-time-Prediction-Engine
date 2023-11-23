@@ -90,7 +90,7 @@ def preprocess_input_data(input_data: Dict[str, Union[int, float]]) -> pd.DataFr
     # Additional preprocessing steps if needed
     return df
     
-def load_and_predict_regression_model(input_data):
+def load_and_predict_regression_model(input_data: pd.Dataframe ):
     # Load the trained regression model
     loaded_regression_model = load('regression_model.joblib')
 
@@ -99,7 +99,7 @@ def load_and_predict_regression_model(input_data):
 
     return predictions
 
-def load_and_predict_classification_model(input_data):
+def load_and_predict_classification_model(input_data:pd.DataFrame):
     
     # Load the trained classification model
     loaded_classification_model = load('classification_model.joblib')
@@ -114,7 +114,7 @@ def load_and_predict_classification_model(input_data):
 
 # Endpoints for predictions
 @app.post("/predict_regression/")
-def predict_regression(input_data: str):
+def predict_regression(input_data: Dict[str, Union[int, float]]):
     try:
         # Preprocess input dictionary into a DataFrame
         processed_input_data = preprocess_input_data(input_data)
@@ -128,7 +128,7 @@ def predict_regression(input_data: str):
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/predict_classification/")
-def predict_classification(input_data: str):
+def predict_classification(input_data: Dict[str, Union[int, float]]):
     try:
         processed_input_data = preprocess_input_data(input_data)
         predictions = load_and_predict_classification_model(processed_input_data)
