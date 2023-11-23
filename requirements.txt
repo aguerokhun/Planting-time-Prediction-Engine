@@ -4,3 +4,5 @@ matplotlib
 joblib
 fastapi
 uvicorn
+typing
+

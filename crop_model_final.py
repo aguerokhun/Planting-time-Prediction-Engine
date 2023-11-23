@@ -8,6 +8,7 @@ from joblib import dump, load
 import matplotlib.pyplot as plt
 from sklearn.multioutput import MultiOutputClassifier
 from fastapi import FastAPI, HTTPException
+from typing import Dict, Union
 app = FastAPI()
 
 def train_and_save_regression_model(filename):
@@ -83,13 +84,15 @@ def train_and_save_classification_model(filename):
     # Metrics for 'season' Classification Model
     y_pred_class = multi_output_classifier.predict(X_test_class)
     y_pred_class_season, y_pred_class_harvest = y_pred_class[:, 0], y_pred_class[:, 1]
+
+def preprocess_input_data(input_data: Dict[str, Union[int, float]]) -> pd.DataFrame:
+    df = pd.DataFrame([input_data])
+    # Additional preprocessing steps if needed
+    return df
     
 def load_and_predict_regression_model(input_data):
     # Load the trained regression model
     loaded_regression_model = load('regression_model.joblib')
-
-    # Preprocess input data if needed
-    # ...
 
     # Make predictions using the loaded regression model
     predictions = loaded_regression_model.predict(input_data)
@@ -97,11 +100,9 @@ def load_and_predict_regression_model(input_data):
     return predictions
 
 def load_and_predict_classification_model(input_data):
+    
     # Load the trained classification model
     loaded_classification_model = load('classification_model.joblib')
-
-    # Preprocess input data if needed
-    # ...
 
     # Make predictions using the loaded classification model
     predictions = loaded_classification_model.predict(input_data)
@@ -115,8 +116,11 @@ def load_and_predict_classification_model(input_data):
 @app.post("/predict_regression/")
 def predict_regression(input_data: str):
     try:
+        # Preprocess input dictionary into a DataFrame
+        processed_input_data = preprocess_input_data(input_data)
+
         # Call the function to load and predict using the regression model
-        predictions = load_and_predict_regression_model(input_data)
+        predictions = load_and_predict_regression_model(processed_input_data)
 
         return {"predictions": predictions.tolist()}
     except Exception as e:
@@ -125,5 +129,11 @@ def predict_regression(input_data: str):
 
 @app.post("/predict_classification/")
 def predict_classification(input_data: str):
-    predictions = load_and_predict_classification_model(input_data)
-    return {"predictions": predictions.tolist()}
+    try:
+        processed_input_data = preprocess_input_data(input_data)
+        predictions = load_and_predict_classification_model(processed_input_data)
+        return {"predictions": predictions.tolist()}
+    except Exception as e:
+        #Handle exceptions, return an HTTP 400 Bad Request if needed
+        raise HTTPException(status_code=400, detail=str(e))
+
