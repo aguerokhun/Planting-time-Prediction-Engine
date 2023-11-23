@@ -8,6 +8,8 @@ from joblib import dump, load
 import matplotlib.pyplot as plt
 from sklearn.multioutput import MultiOutputClassifier
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
 from typing import Dict, Union
 app = FastAPI()
 
@@ -114,25 +116,28 @@ def load_and_predict_classification_model(input_data:pd.DataFrame):
 
 # Endpoints for predictions
 @app.post("/predict_regression/")
-def predict_regression(input_data: Dict[str, Union[int, float]]):
+async def predict_regression(input_data: Dict[str, Union[int, float]]):
     try:
         # Preprocess input dictionary into a DataFrame
         processed_input_data = preprocess_input_data(input_data)
 
         # Call the function to load and predict using the regression model
         predictions = load_and_predict_regression_model(processed_input_data)
+        
+        predictions_json = jsonable_encoder(predictions)
 
-        return {"predictions": predictions.tolist()}
+        return JSONResponse(content={"predictions": predictions_json})
     except Exception as e:
         #Handle exceptions, return an HTTP 400 Bad Request if needed
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/predict_classification/")
-def predict_classification(input_data: Dict[str, Union[int, float]]):
+async def predict_classification(input_data: Dict[str, Union[int, float]]):
     try:
         processed_input_data = preprocess_input_data(input_data)
         predictions = load_and_predict_classification_model(processed_input_data)
-        return {"predictions": predictions.tolist()}
+        predictions_json = jsonable_encoder(predictions)
+        return JSONResponse(content={"predictions": predictions_json})
     except Exception as e:
         #Handle exceptions, return an HTTP 400 Bad Request if needed
         raise HTTPException(status_code=400, detail=str(e))
