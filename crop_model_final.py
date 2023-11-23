@@ -112,7 +112,7 @@ def load_and_predict_classification_model(input_data):
 # train_and_save_classification_model("C:\\Users\\aguerokhun\\Documents\\hackathon\\Crop_Data.csv")
 
 # Endpoints for predictions
-@app.get("/predict_regression/")
+@app.post("/predict_regression/")
 def predict_regression(input_data: str):
     try:
         # Call the function to load and predict using the regression model
@@ -123,7 +123,7 @@ def predict_regression(input_data: str):
         #Handle exceptions, return an HTTP 400 Bad Request if needed
         raise HTTPException(status_code=400, detail=str(e))
 
-@app.get("/predict_classification/")
+@app.post("/predict_classification/")
 def predict_classification(input_data: str):
     predictions = load_and_predict_classification_model(input_data)
     return {"predictions": predictions.tolist()}
